@@ -37,16 +37,16 @@ public class CharacterBufferTestPerformance {
             report = fillWithCharWhileHasMemory(new StringBuilder());
             System.out.printf("  StringBuilder:         size: %,d chars    speed: %,d appends/ms    time: %,d ms%n", report.chars, report.speed, report.time);
 
-            report = fillWithCharWhileHasMemory(CharacterBuffer.pageSize(8192)); // 8 K
+            report = fillWithCharWhileHasMemory(CharacterBuffer.withPageSize(8192)); // 8 K
             System.out.printf("  CharacterBuffer  8 K:  size: %,d chars    speed: %,d appends/ms    time: %,d ms%n", report.chars, report.speed, report.time);
 
-            report = fillWithCharWhileHasMemory(CharacterBuffer.pageSize(16384)); // 16 K
+            report = fillWithCharWhileHasMemory(CharacterBuffer.withPageSize(16384)); // 16 K
             System.out.printf("  CharacterBuffer 16 K:  size: %,d chars    speed: %,d appends/ms    time: %,d ms%n", report.chars, report.speed, report.time);
 
-            report = fillWithCharWhileHasMemory(CharacterBuffer.pageSize(32768)); // 32 K
+            report = fillWithCharWhileHasMemory(CharacterBuffer.withPageSize(32768)); // 32 K
             System.out.printf("  CharacterBuffer 32 K:  size: %,d chars    speed: %,d appends/ms    time: %,d ms%n", report.chars, report.speed, report.time);
 
-            report = fillWithCharWhileHasMemory(CharacterBuffer.pageSize(65536)); // 64 K
+            report = fillWithCharWhileHasMemory(CharacterBuffer.withPageSize(65536)); // 64 K
             System.out.printf("  CharacterBuffer 64 K:  size: %,d chars    speed: %,d appends/ms    time: %,d ms%n", report.chars, report.speed, report.time);
         } catch (Throwable t) {
             t.printStackTrace();
@@ -66,16 +66,16 @@ public class CharacterBufferTestPerformance {
             report = fillWithCharSequenceWhileHasMemory(new StringBuilder());
             System.out.printf("  StringBuilder:         size: %,d chars    speed: %,d appends/ms    time: %,d ms%n", report.chars, report.speed, report.time);
 
-            report = fillWithCharSequenceWhileHasMemory(CharacterBuffer.pageSize(8192)); // 8 K
+            report = fillWithCharSequenceWhileHasMemory(CharacterBuffer.withPageSize(8192)); // 8 K
             System.out.printf("  CharacterBuffer  8 K:  size: %,d chars    speed: %,d appends/ms    time: %,d ms%n", report.chars, report.speed, report.time);
 
-            report = fillWithCharSequenceWhileHasMemory(CharacterBuffer.pageSize(16384)); // 16 K
+            report = fillWithCharSequenceWhileHasMemory(CharacterBuffer.withPageSize(16384)); // 16 K
             System.out.printf("  CharacterBuffer 16 K:  size: %,d chars    speed: %,d appends/ms    time: %,d ms%n", report.chars, report.speed, report.time);
 
-            report = fillWithCharSequenceWhileHasMemory(CharacterBuffer.pageSize(32768)); // 32 K
+            report = fillWithCharSequenceWhileHasMemory(CharacterBuffer.withPageSize(32768)); // 32 K
             System.out.printf("  CharacterBuffer 32 K:  size: %,d chars    speed: %,d appends/ms    time: %,d ms%n", report.chars, report.speed, report.time);
 
-            report = fillWithCharSequenceWhileHasMemory(CharacterBuffer.pageSize(65536)); // 64 K
+            report = fillWithCharSequenceWhileHasMemory(CharacterBuffer.withPageSize(65536)); // 64 K
             System.out.printf("  CharacterBuffer 64 K:  size: %,d chars    speed: %,d appends/ms    time: %,d ms%n", report.chars, report.speed, report.time);
         } catch (Throwable t) {
             t.printStackTrace();

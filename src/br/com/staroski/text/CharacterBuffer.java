@@ -6,15 +6,15 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
 
     private static final long serialVersionUID = 1;
 
-    public static CharacterBuffer pageSize(int pageSize) {
+    public static CharacterBuffer standard() {
+        return withPageSize(8192);
+    }
+
+    public static CharacterBuffer withPageSize(int pageSize) {
         if (pageSize < 1) {
             throw new IllegalArgumentException("page size must be greater than zero");
         }
         return new CharacterBuffer(pageSize);
-    }
-
-    public static CharacterBuffer standard() {
-        return pageSize(8192);
     }
 
     private final int pageSize;
@@ -28,8 +28,12 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
         this.memory = new char[1][pageSize];
     }
 
+    public CharacterBuffer append(boolean value) {
+        return append(String.valueOf(value));
+    }
+
     @Override
-    public Appendable append(char character) {
+    public CharacterBuffer append(char character) {
         memory[page][offset] = character;
         if ((offset = (offset + pageSize + 1) % pageSize) == 0) {
             allocate();
@@ -38,8 +42,16 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
         return this;
     }
 
+    public CharacterBuffer append(char[] characters) {
+        return append(String.valueOf(characters));
+    }
+
+    public CharacterBuffer append(char[] characters, int offset, int length) {
+        return append(String.valueOf(characters, offset, length));
+    }
+
     @Override
-    public Appendable append(CharSequence text) {
+    public CharacterBuffer append(CharSequence text) {
         if (text == null) {
             text = "null";
         }
@@ -65,8 +77,28 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
     }
 
     @Override
-    public Appendable append(CharSequence text, int start, int end) {
+    public CharacterBuffer append(CharSequence text, int start, int end) {
         return append(text.subSequence(start, end));
+    }
+
+    public CharacterBuffer append(double value) {
+        return append(String.valueOf(value));
+    }
+
+    public CharacterBuffer append(float value) {
+        return append(String.valueOf(value));
+    }
+
+    public CharacterBuffer append(int value) {
+        return append(String.valueOf(value));
+    }
+
+    public CharacterBuffer append(long value) {
+        return append(String.valueOf(value));
+    }
+
+    public CharacterBuffer append(Object object) {
+        return append(String.valueOf(object));
     }
 
     @Override
@@ -75,12 +107,12 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
+    public boolean equals(Object object) {
+        if (object == this) {
             return true;
         }
-        if (obj instanceof CharacterBuffer) {
-            return this.toString().equals(obj.toString());
+        if (object instanceof CharacterBuffer) {
+            return this.toString().equals(object.toString());
         }
         return false;
     }
@@ -96,13 +128,13 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
     }
 
     @Override
-    public CharSequence subSequence(int start, int end) {
+    public CharacterBuffer subSequence(int start, int end) {
+        CharacterBuffer subSequence = CharacterBuffer.withPageSize(pageSize);
         int length = end - start;
-        char[] chars = new char[length];
         for (int i = 0; i < length; i++) {
-            chars[i] = charAt(start + i);
+            subSequence.append(charAt(start + i));
         }
-        return new String(chars);
+        return subSequence;
     }
 
     @Override
@@ -117,7 +149,7 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
             }
             System.arraycopy(memory[last], 0, chars, index, offset);
         }
-        return new String(chars);
+        return String.valueOf(chars);
     }
 
     private void allocate() {
