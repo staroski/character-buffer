@@ -137,6 +137,14 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
         return subSequence;
     }
 
+    public String substring(int start) {
+        return substring(start, size);
+    }
+
+    public String substring(int start, int end) {
+        return subSequence(start, end).toString();
+    }
+
     @Override
     public String toString() {
         int index = 0;
