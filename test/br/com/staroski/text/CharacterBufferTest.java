@@ -1,391 +1,268 @@
 package br.com.staroski.text;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class CharacterBufferTest {
+
+    /* Holds references to the objects that are tested */
+    private final class Objects {
+
+        public final CharacterBuffer a = CharacterBuffer.standard();
+        public final CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
+        public final StringBuilder c = new StringBuilder();
+        public final StringBuffer d = new StringBuffer();
+
+        public void fill(int characterCount) throws IOException {
+            fill(a, characterCount);
+            fill(b, characterCount);
+            fill(c, characterCount);
+            fill(d, characterCount);
+        }
+
+        private <T extends Appendable & CharSequence> void fill(T buffer, int chars) throws IOException {
+            for (int i = 0; i < chars; i++) {
+                buffer.append('X');
+            }
+        }
+
+        public void checkToString() {
+            String method = "toString()";
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> CharacterBuffer 16K '" + method + "'", a.toString(), b.toString());
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuilder       '" + method + "'", a.toString(), c.toString());
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuffer        '" + method + "'", a.toString(), d.toString());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", b.toString(), c.toString());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", b.toString(), d.toString());
+        }
+
+        public void checkCharAt(int index) {
+            String method = "charAt(int)";
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> CharacterBuffer 16K '" + method + "'", a.charAt(index), b.charAt(index));
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuilder       '" + method + "'", a.charAt(index), c.charAt(index));
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuffer        '" + method + "'", a.charAt(index), d.charAt(index));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", b.charAt(index), c.charAt(index));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", b.charAt(index), d.charAt(index));
+        }
+
+        public void checkLength() {
+            String method = "length()";
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> CharacterBuffer 16K '" + method + "'", a.length(), b.length());
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuilder       '" + method + "'", a.length(), c.length());
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuffer        '" + method + "'", a.length(), d.length());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", b.length(), c.length());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", b.length(), d.length());
+        }
+
+        public void checkSubSequence(int start, int end) {
+            String method = "subSequence(int, int)";
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> CharacterBuffer 16K '" + method + "'",
+                                a.subSequence(start, end).toString(),
+                                b.subSequence(start, end).toString());
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuilder       '" + method + "'",
+                                a.subSequence(start, end).toString(),
+                                c.subSequence(start, end).toString());
+            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuffer        '" + method + "'",
+                                a.subSequence(start, end).toString(),
+                                d.subSequence(start, end).toString());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'",
+                                b.subSequence(start, end).toString(),
+                                c.subSequence(start, end).toString());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'",
+                                b.subSequence(start, end).toString(),
+                                d.subSequence(start, end).toString());
+        }
+    }
 
     private static final int CHARACTER_COUNT = 10485760; // 10 M
     private static final int CUSTOM_PAGE_SIZE = 16384;
 
     @Test
     public void testAppendBoolean() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         boolean value = true;
+        objects.a.append(value);
+        objects.b.append(value);
+        objects.c.append(value);
+        objects.d.append(value);
 
-        a.append(value);
-        b.append(value);
-        c.append(value);
-        d.append(value);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testAppendChar() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         char character = 'A';
+        objects.a.append(character);
+        objects.b.append(character);
+        objects.c.append(character);
+        objects.d.append(character);
 
-        a.append(character);
-        b.append(character);
-        c.append(character);
-        d.append(character);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
-        assertEquals("StringBuilder <> StringBuffer", c.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testAppendCharacters() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         char[] characters = new char[] { 'a', 'b', 'c', 'd', 'e' };
+        objects.a.append(characters);
+        objects.b.append(characters);
+        objects.c.append(characters);
+        objects.d.append(characters);
 
-        a.append(characters);
-        b.append(characters);
-        c.append(characters);
-        d.append(characters);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testAppendCharactersOffsetLength() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         char[] characters = new char[] { 'H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd' };
         int offset = 3;
         int length = 5;
+        objects.a.append(characters, offset, length);
+        objects.b.append(characters, offset, length);
+        objects.c.append(characters, offset, length);
+        objects.d.append(characters, offset, length);
 
-        a.append(characters, offset, length);
-        b.append(characters, offset, length);
-        c.append(characters, offset, length);
-        d.append(characters, offset, length);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testAppendCharSequence() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         CharSequence charSequence = "Hello World";
+        objects.a.append(charSequence);
+        objects.b.append(charSequence);
+        objects.c.append(charSequence);
+        objects.d.append(charSequence);
 
-        a.append(charSequence);
-        b.append(charSequence);
-        c.append(charSequence);
-        d.append(charSequence);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testAppendCharSequenceStartEnd() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         CharSequence charSequence = "Hello World";
         int start = 3;
         int end = 7;
+        objects.a.append(charSequence, start, end);
+        objects.b.append(charSequence, start, end);
+        objects.c.append(charSequence, start, end);
+        objects.d.append(charSequence, start, end);
 
-        a.append(charSequence, start, end);
-        b.append(charSequence, start, end);
-        c.append(charSequence, start, end);
-        d.append(charSequence, start, end);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testAppendDouble() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         double value = 12345.6789;
+        objects.a.append(value);
+        objects.b.append(value);
+        objects.c.append(value);
+        objects.d.append(value);
 
-        a.append(value);
-        b.append(value);
-        c.append(value);
-        d.append(value);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testAppendFloat() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         float value = (float) 123.45;
+        objects.a.append(value);
+        objects.b.append(value);
+        objects.c.append(value);
+        objects.d.append(value);
 
-        a.append(value);
-        b.append(value);
-        c.append(value);
-        d.append(value);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testAppendInt() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         int value = 123;
+        objects.a.append(value);
+        objects.b.append(value);
+        objects.c.append(value);
+        objects.d.append(value);
 
-        a.append(value);
-        b.append(value);
-        c.append(value);
-        d.append(value);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testAppendLong() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         long value = 123;
+        objects.a.append(value);
+        objects.b.append(value);
+        objects.c.append(value);
+        objects.d.append(value);
 
-        a.append(value);
-        b.append(value);
-        c.append(value);
-        d.append(value);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testAppendObject() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
 
         List<?> object = Arrays.asList("Hello World", 1, true, 'a', 2.5);
+        objects.a.append(object);
+        objects.b.append(object);
+        objects.c.append(object);
+        objects.d.append(object);
 
-        a.append(object);
-        b.append(object);
-        c.append(object);
-        d.append(object);
-
-        assertEquals("CharacterBuffer STD <> CharacterBuffer 16K", a.toString(), b.toString());
-        assertEquals("CharacterBuffer STD <> StringBuilder", a.toString(), c.toString());
-        assertEquals("CharacterBuffer STD <> StringBuffer", a.toString(), d.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuilder", b.toString(), c.toString());
-        assertEquals("CharacterBuffer 16K <> StringBuffer", b.toString(), d.toString());
+        objects.checkToString();
     }
 
     @Test
     public void testCharAt() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
-
-        int index = 10;
-        assertEquals("A.charAt(index) <> B.charAt(index)", a.charAt(index), b.charAt(index));
-        assertEquals("A.charAt(index) <> C.charAt(index)", a.charAt(index), c.charAt(index));
-        assertEquals("A.charAt(index) <> D.charAt(index)", a.charAt(index), d.charAt(index));
-        assertEquals("B.charAt(index) <> C.charAt(index)", b.charAt(index), c.charAt(index));
-        assertEquals("B.charAt(index) <> D.charAt(index)", b.charAt(index), d.charAt(index));
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
+        objects.checkCharAt(10);
     }
 
     @Test
     public void testLength() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
-
-        assertEquals("A.length() <> B.length()", a.length(), b.length());
-        assertEquals("A.length() <> C.length()", a.length(), c.length());
-        assertEquals("A.length() <> D.length()", a.length(), d.length());
-        assertEquals("B.length() <> C.length()", b.length(), c.length());
-        assertEquals("B.length() <> D.length()", b.length(), d.length());
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
+        objects.checkLength();
     }
 
     @Test
     public void testSubSequence() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
-
-        int start = 30;
-        int end = 90;
-        assertEquals("A.subSequence(start, end) <> B.subSequence(start, end)", a.subSequence(start, end).toString(), b.subSequence(start, end).toString());
-        assertEquals("A.subSequence(start, end) <> C.subSequence(start, end)", a.subSequence(start, end).toString(), c.subSequence(start, end).toString());
-        assertEquals("A.subSequence(start, end) <> D.subSequence(start, end)", a.subSequence(start, end).toString(), d.subSequence(start, end).toString());
-        assertEquals("B.subSequence(start, end) <> C.subSequence(start, end)", b.subSequence(start, end).toString(), c.subSequence(start, end).toString());
-        assertEquals("B.subSequence(start, end) <> D.subSequence(start, end)", b.subSequence(start, end).toString(), d.subSequence(start, end).toString());
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
+        objects.checkSubSequence(30, 90);
     }
 
     @Test
     public void testToString() throws IOException {
-        CharacterBuffer a = CharacterBuffer.standard();
-        CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
-        StringBuilder c = new StringBuilder();
-        StringBuffer d = new StringBuffer();
-
-        fill(a, CHARACTER_COUNT);
-        fill(b, CHARACTER_COUNT);
-        fill(c, CHARACTER_COUNT);
-        fill(d, CHARACTER_COUNT);
-
-        assertEquals("A.toString() <> B.toString()", a.toString(), b.toString());
-        assertEquals("A.toString() <> C.toString()", a.toString(), c.toString());
-        assertEquals("A.toString() <> D.toString()", a.toString(), d.toString());
-        assertEquals("B.toString() <> C.toString()", b.toString(), c.toString());
-        assertEquals("B.toString() <> D.toString()", b.toString(), d.toString());
-    }
-
-    private <T extends Appendable & CharSequence> void fill(T buffer, int chars) throws IOException {
-        for (int i = 0; i < chars; i++) {
-            buffer.append('X');
-        }
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
+        objects.checkToString();
     }
 }
