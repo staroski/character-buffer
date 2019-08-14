@@ -281,6 +281,35 @@ public class CharacterBufferTest {
     }
 
     @Test
+    public void testDeleteCharAtIndex() throws IOException {
+        Objects objects = new Objects();
+        objects.append("Hello World");
+
+        int index = 4;
+        objects.a.deleteCharAt(index);
+        objects.b.deleteCharAt(index);
+        objects.c.deleteCharAt(index);
+        objects.d.deleteCharAt(index);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testDeleteStartEnd() throws IOException {
+        Objects objects = new Objects();
+        objects.append("Hello World");
+
+        int start = 2;
+        int end = 7;
+        objects.a.delete(start, end);
+        objects.b.delete(start, end);
+        objects.c.delete(start, end);
+        objects.d.delete(start, end);
+
+        objects.checkToString();
+    }
+
+    @Test
     public void testLength() throws IOException {
         Objects objects = new Objects();
         objects.fill(CHARACTER_COUNT);
