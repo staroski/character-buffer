@@ -18,14 +18,15 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
     }
 
     private final int pageSize;
+
     private char[][] memory;
+    private int size;
     private int page;
     private int offset;
-    private int size;
 
     private CharacterBuffer(int pageSize) {
         this.pageSize = pageSize;
-        this.memory = new char[1][pageSize];
+        reset();
     }
 
     public CharacterBuffer append(boolean value) {
@@ -103,7 +104,12 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
 
     @Override
     public char charAt(int index) {
-        return memory[index / size][index % size];
+        return memory[index / pageSize][index % pageSize];
+    }
+
+    public CharacterBuffer deleteAll() {
+        reset();
+        return this;
     }
 
     @Override
@@ -161,9 +167,20 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
     }
 
     private void allocate() {
-        char[][] alloc = new char[++page + 1][];
-        System.arraycopy(memory, 0, alloc, 0, page);
-        alloc[page] = new char[pageSize];
-        memory = alloc;
+        synchronized (this) {
+            char[][] alloc = new char[++page + 1][];
+            System.arraycopy(memory, 0, alloc, 0, page);
+            alloc[page] = new char[pageSize];
+            memory = alloc;
+        }
+    }
+
+    private void reset() {
+        synchronized (this) {
+            memory = new char[1][pageSize];
+            size = 0;
+            page = 0;
+            offset = 0;
+        }
     }
 }
