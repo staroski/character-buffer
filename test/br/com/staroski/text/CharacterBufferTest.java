@@ -1,6 +1,10 @@
 package br.com.staroski.text;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -314,6 +318,26 @@ public class CharacterBufferTest {
         Objects objects = new Objects();
         objects.fill(CHARACTER_COUNT);
         objects.checkLength();
+    }
+
+    @Test
+    public void testSerialization() throws Exception {
+        CharacterBuffer expected = CharacterBuffer.standard().append("Testing Serialization");
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(expected);
+        oos.flush();
+        oos.close();
+
+        byte[] bytes = bos.toByteArray();
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        ObjectInputStream ois = new ObjectInputStream(bis);
+        CharacterBuffer actual = (CharacterBuffer) ois.readObject();
+        ois.close();
+
+        Assert.assertEquals(expected, actual);
     }
 
     @Test

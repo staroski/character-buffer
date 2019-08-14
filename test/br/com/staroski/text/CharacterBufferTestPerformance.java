@@ -1,7 +1,9 @@
 package br.com.staroski.text;
-import java.io.IOException;
 
-import br.com.staroski.text.CharacterBuffer;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 public class CharacterBufferTestPerformance {
 
@@ -21,6 +23,7 @@ public class CharacterBufferTestPerformance {
     }
 
     public void execute() throws Exception {
+        testSerializationBytesLength();
         testAppendCharPerformance();
         testAppendCharSequencePerformance();
     }
@@ -83,6 +86,17 @@ public class CharacterBufferTestPerformance {
         System.out.println("}");
     }
 
+    public void testSerializationBytesLength() throws Exception {
+        String text = "testing the serialization mechanism";
+        byte[] characterBuffer = serialize(CharacterBuffer.standard().append(text));
+        byte[] stringBuilder = serialize(new StringBuilder(text));
+        byte[] stringBuffer = serialize(new StringBuffer(text));
+
+        System.err.println("Serialization size of CharacterBuffer: " + characterBuffer.length);
+        System.err.println("Serialization size of StringBuilder:   " + stringBuilder.length);
+        System.err.println("Serialization size of StringBuffer:    " + stringBuffer.length);
+    }
+
     private <T extends Appendable & CharSequence> Report fillWithCharSequenceWhileHasMemory(T buffer) throws Exception {
         Report report = new Report();
         long start = System.currentTimeMillis();
@@ -115,5 +129,14 @@ public class CharacterBufferTestPerformance {
             Thread.sleep(1000);
             return report;
         }
+    }
+
+    private <T extends Serializable> byte[] serialize(T object) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(object);
+        oos.flush();
+        oos.close();
+        return bos.toByteArray();
     }
 }

@@ -1,24 +1,27 @@
 package br.com.staroski.text;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.Arrays;
 
-public final class CharacterBuffer implements Appendable, CharSequence, Serializable {
+public final class CharacterBuffer implements Appendable, CharSequence, Comparable<CharSequence>, Serializable {
 
     private static final long serialVersionUID = 1;
 
-    public static CharacterBuffer standard() {
+    public final static CharacterBuffer standard() {
         return withPageSize(8192);
     }
 
-    public static CharacterBuffer withPageSize(int pageSize) {
+    public final static CharacterBuffer withPageSize(int pageSize) {
         if (pageSize < 1) {
             throw new IllegalArgumentException("page size must be greater than zero");
         }
         return new CharacterBuffer(pageSize);
     }
 
-    private final int pageSize;
+    private int pageSize;
 
     private char[][] memory;
     private int size;
@@ -27,33 +30,33 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
 
     private CharacterBuffer(int pageSize) {
         this.pageSize = pageSize;
-        reset();
+        allocate();
     }
 
-    public CharacterBuffer append(boolean value) {
+    public final CharacterBuffer append(boolean value) {
         return append(String.valueOf(value));
     }
 
     @Override
-    public CharacterBuffer append(char character) {
+    public final CharacterBuffer append(char character) {
         memory[page][offset] = character;
         if ((offset = (offset + pageSize + 1) % pageSize) == 0) {
-            allocate();
+            allocateMore();
         }
         ++size;
         return this;
     }
 
-    public CharacterBuffer append(char[] characters) {
+    public final CharacterBuffer append(char[] characters) {
         return append(String.valueOf(characters));
     }
 
-    public CharacterBuffer append(char[] characters, int offset, int length) {
+    public final CharacterBuffer append(char[] characters, int offset, int length) {
         return append(String.valueOf(characters, offset, length));
     }
 
     @Override
-    public CharacterBuffer append(CharSequence text) {
+    public final CharacterBuffer append(CharSequence text) {
         if (text == null) {
             text = "null";
         }
@@ -68,7 +71,7 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
             int length = Math.min(availableOnPage, remaining);
             System.arraycopy(chars, index, memory[page], offset, length);
             if ((offset = (offset + pageSize + length) % pageSize) == 0) {
-                allocate();
+                allocateMore();
             }
             availableOnPage = pageSize - offset;
             remaining -= length;
@@ -79,36 +82,51 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
     }
 
     @Override
-    public CharacterBuffer append(CharSequence text, int start, int end) {
+    public final CharacterBuffer append(CharSequence text, int start, int end) {
         return append(text.subSequence(start, end));
     }
 
-    public CharacterBuffer append(double value) {
+    public final CharacterBuffer append(double value) {
         return append(String.valueOf(value));
     }
 
-    public CharacterBuffer append(float value) {
+    public final CharacterBuffer append(float value) {
         return append(String.valueOf(value));
     }
 
-    public CharacterBuffer append(int value) {
+    public final CharacterBuffer append(int value) {
         return append(String.valueOf(value));
     }
 
-    public CharacterBuffer append(long value) {
+    public final CharacterBuffer append(long value) {
         return append(String.valueOf(value));
     }
 
-    public CharacterBuffer append(Object object) {
+    public final CharacterBuffer append(Object object) {
         return append(String.valueOf(object));
     }
 
     @Override
-    public char charAt(int index) {
+    public final char charAt(int index) {
         return memory[index / pageSize][index % pageSize];
     }
 
-    public CharacterBuffer delete(int start, int end) {
+    @Override
+    public final int compareTo(CharSequence that) {
+        int diff = this.length() - that.length();
+        if (diff != 0) {
+            return diff;
+        }
+        for (int i = 0; i < length(); i++) {
+            diff = this.charAt(i) - that.charAt(i);
+            if (diff != 0) {
+                return diff;
+            }
+        }
+        return 0;
+    }
+
+    public final CharacterBuffer delete(int start, int end) {
         end--;
         int destinyPage = start / pageSize;
         int destinyOffset = start % pageSize;
@@ -141,17 +159,17 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
         return this;
     }
 
-    public CharacterBuffer deleteAll() {
-        reset();
+    public final CharacterBuffer deleteAll() {
+        allocate();
         return this;
     }
 
-    public CharacterBuffer deleteCharAt(int index) {
+    public final CharacterBuffer deleteCharAt(int index) {
         return delete(index, index + 1);
     }
 
     @Override
-    public boolean equals(Object object) {
+    public final boolean equals(Object object) {
         if (object == this) {
             return true;
         }
@@ -162,17 +180,17 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return toString().hashCode();
     }
 
     @Override
-    public int length() {
+    public final int length() {
         return size;
     }
 
     @Override
-    public CharacterBuffer subSequence(int start, int end) {
+    public final CharacterBuffer subSequence(int start, int end) {
         CharacterBuffer subSequence = CharacterBuffer.withPageSize(pageSize);
         int length = end - start;
         for (int i = 0; i < length; i++) {
@@ -181,16 +199,16 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
         return subSequence;
     }
 
-    public String substring(int start) {
+    public final String substring(int start) {
         return substring(start, size);
     }
 
-    public String substring(int start, int end) {
+    public final String substring(int start, int end) {
         return subSequence(start, end).toString();
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         int index = 0;
         char[] chars = new char[size];
         int last = size / pageSize;
@@ -205,17 +223,42 @@ public final class CharacterBuffer implements Appendable, CharSequence, Serializ
     }
 
     private void allocate() {
-        char[][] alloc = new char[++page + 1][];
-        System.arraycopy(memory, 0, alloc, 0, page);
-        alloc[page] = new char[pageSize];
-        memory = alloc;
-    }
-
-    private void reset() {
         memory = new char[1][pageSize];
         size = 0;
         page = 0;
         offset = 0;
     }
 
+    private void allocateMore() {
+        char[][] moreMemory = new char[++page + 1][];
+        System.arraycopy(memory, 0, moreMemory, 0, page);
+        moreMemory[page] = new char[pageSize];
+        memory = moreMemory;
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        pageSize = in.readInt();
+        size = in.readInt();
+        int pages = (size / pageSize) + 1;
+        page = size / pageSize;
+        offset = size % pageSize;
+        memory = new char[pages][];
+        InputStreamReader reader = new InputStreamReader(in);
+        for (int page = 0; page < pages; page++) {
+            memory[page] = new char[pageSize];
+            reader.read(memory[page], 0, pageSize);
+        }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        out.writeInt(pageSize);
+        out.writeInt(size);
+        int pages = (size / pageSize) + 1;
+        int lastPage = pages - 1;
+        OutputStreamWriter writer = new OutputStreamWriter(out);
+        for (int page = 0; page < pages; page++) {
+            writer.write(memory[page], 0, page == lastPage ? offset : pageSize);
+        }
+        writer.flush();
+    }
 }
