@@ -11,13 +11,16 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Ricardo Artur Staroski
+ */
 public class CharacterBufferTest {
 
     /* Holds references to the objects that are tested */
     private final class Objects {
 
-        public final CharacterBuffer a = CharacterBuffer.standard();
-        public final CharacterBuffer b = CharacterBuffer.withPageSize(CUSTOM_PAGE_SIZE);
+        public final CharacterBuffer a = CharacterBuffer.with(16).kilo().bytes();
+        public final CharacterBuffer b = CharacterBuffer.with(32).kilo().bytes();
         public final StringBuilder c = new StringBuilder();
         public final StringBuffer d = new StringBuffer();
 
@@ -30,76 +33,76 @@ public class CharacterBufferTest {
 
         public void checkCharAt(int index) {
             String method = "charAt(int)";
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> CharacterBuffer 16K '" + method + "'", a.charAt(index), b.charAt(index));
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuilder       '" + method + "'", a.charAt(index), c.charAt(index));
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuffer        '" + method + "'", a.charAt(index), d.charAt(index));
-            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", b.charAt(index), c.charAt(index));
-            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", b.charAt(index), d.charAt(index));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'", a.charAt(index), b.charAt(index));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", a.charAt(index), c.charAt(index));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", a.charAt(index), d.charAt(index));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuilder       '" + method + "'", b.charAt(index), c.charAt(index));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'", b.charAt(index), d.charAt(index));
         }
 
         public void checkLength() {
             String method = "length()";
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> CharacterBuffer 16K '" + method + "'", a.length(), b.length());
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuilder       '" + method + "'", a.length(), c.length());
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuffer        '" + method + "'", a.length(), d.length());
-            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", b.length(), c.length());
-            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", b.length(), d.length());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'", a.length(), b.length());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", a.length(), c.length());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", a.length(), d.length());
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuilder       '" + method + "'", b.length(), c.length());
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'", b.length(), d.length());
         }
 
         public void checkSubSequence(int start, int end) {
             String method = "subSequence(int, int)";
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> CharacterBuffer 16K '" + method + "'",
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'",
                                 a.subSequence(start, end).toString(),
                                 b.subSequence(start, end).toString());
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuilder       '" + method + "'",
-                                a.subSequence(start, end).toString(),
-                                c.subSequence(start, end).toString());
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuffer        '" + method + "'",
-                                a.subSequence(start, end).toString(),
-                                d.subSequence(start, end).toString());
             Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'",
-                                b.subSequence(start, end).toString(),
+                                a.subSequence(start, end).toString(),
                                 c.subSequence(start, end).toString());
             Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'",
+                                a.subSequence(start, end).toString(),
+                                d.subSequence(start, end).toString());
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuilder       '" + method + "'",
+                                b.subSequence(start, end).toString(),
+                                c.subSequence(start, end).toString());
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'",
                                 b.subSequence(start, end).toString(),
                                 d.subSequence(start, end).toString());
         }
 
         public void checkSubstring(int start) {
             String method = "substring(int)";
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> CharacterBuffer 16K '" + method + "'", a.substring(start), b.substring(start));
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuilder       '" + method + "'", a.substring(start), c.substring(start));
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuffer        '" + method + "'", a.substring(start), d.substring(start));
-            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", b.substring(start), c.substring(start));
-            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", b.substring(start), d.substring(start));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'", a.substring(start), b.substring(start));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", a.substring(start), c.substring(start));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", a.substring(start), d.substring(start));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuilder       '" + method + "'", b.substring(start), c.substring(start));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'", b.substring(start), d.substring(start));
         }
 
         public void checkSubstring(int start, int end) {
             String method = "substring(int, int)";
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> CharacterBuffer 16K '" + method + "'",
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'",
                                 a.substring(start, end),
                                 b.substring(start, end));
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuilder       '" + method + "'",
-                                a.substring(start, end),
-                                c.substring(start, end));
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuffer        '" + method + "'",
-                                a.substring(start, end),
-                                d.substring(start, end));
             Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'",
-                                b.substring(start, end),
+                                a.substring(start, end),
                                 c.substring(start, end));
             Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'",
+                                a.substring(start, end),
+                                d.substring(start, end));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuilder       '" + method + "'",
+                                b.substring(start, end),
+                                c.substring(start, end));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'",
                                 b.substring(start, end),
                                 d.substring(start, end));
         }
 
         public void checkToString() {
             String method = "toString()";
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> CharacterBuffer 16K '" + method + "'", a.toString(), b.toString());
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuilder       '" + method + "'", a.toString(), c.toString());
-            Assert.assertEquals("CharacterBuffer STD '" + method + "' <> StringBuffer        '" + method + "'", a.toString(), d.toString());
-            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", b.toString(), c.toString());
-            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", b.toString(), d.toString());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'", a.toString(), b.toString());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", a.toString(), c.toString());
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", a.toString(), d.toString());
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuilder       '" + method + "'", b.toString(), c.toString());
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'", b.toString(), d.toString());
         }
 
         public void fill(int characterCount) throws IOException {
@@ -117,7 +120,6 @@ public class CharacterBufferTest {
     }
 
     private static final int CHARACTER_COUNT = 10485760; // 10 M
-    private static final int CUSTOM_PAGE_SIZE = 16384;
 
     @Test
     public void testAppendBoolean() throws IOException {
@@ -322,7 +324,7 @@ public class CharacterBufferTest {
 
     @Test
     public void testSerialization() throws Exception {
-        CharacterBuffer expected = CharacterBuffer.standard().append("Testing Serialization");
+        CharacterBuffer expected = CharacterBuffer.with(16).kilo().bytes().append("Testing Serialization");
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
