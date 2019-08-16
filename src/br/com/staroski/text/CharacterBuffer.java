@@ -12,8 +12,11 @@ import java.util.Arrays;
 /**
  * This class is an alternative to Java's {@link StringBuilder} and {@link StringBuffer} classes.<br>
  * Instances of this class are created using an <i>builder design pattern</i> through the factory method {@link CharacterBuffer#with(int)}.<br>
+ * 
+ * <p>
  * <b>Example:</b><br>
  * Instantiating a {@link CharacterBuffer} with memory pages of {@code 16KB} in 4 different ways:
+ * </p>
  * 
  * <pre>
  * CharacterBuffer a = CharacterBuffer.with(16384).bytes();
@@ -26,6 +29,10 @@ import java.util.Arrays;
  * - When {@link StringBuilder} and {@link StringBuffer} reach the current capacity, they double the size of the internal {@code char} array.<br>
  * - When {@link CharacterBuffer} reach the current capacity, it allocates a new memory page that is a fixed size {@code char} array.<br>
  * With this strategy the {@link CharacterBuffer} prevents {@code OutOfMemoryError}s when dealing with huge {@link String} concatenations.<br>
+ * 
+ * <p>
+ * <b>Hint:</b> This class is not designed to be extended.
+ * </p>
  * 
  * @author Ricardo Artur Staroski
  */
@@ -421,6 +428,94 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
     @Override
     public final int hashCode() {
         return toString().hashCode();
+    }
+
+    /**
+     * Returns the index within this {@link CharacterBuffer} of the first occurrence of the specified {@link CharSequence}.<br>
+     * <b>Hint:</b> This search is performed from left to right.
+     *
+     * @param text
+     *            the {@link CharSequence} to search for.
+     * 
+     * @return the index of the first occurrence of the specified {@link CharSequence}<br>
+     *         {@code -1} if there is no such occurrence.
+     */
+    public final int indexOf(CharSequence text) {
+        return indexOf(text, 0);
+    }
+
+    /**
+     * Returns the index within this {@link CharacterBuffer} of the first occurrence of the specified {@link CharSequence}, starting at the specified index.<br>
+     * <b>Hint:</b> This search is performed from left to right.
+     *
+     * @param text
+     *            the {@link CharSequence} to search for.
+     * 
+     * @param fromIndex
+     *            the index from which to start the search.
+     * 
+     * @return the index of the first occurrence of the specified {@link CharSequence}<br>
+     *         {@code -1} if there is no such occurrence.
+     */
+    public final int indexOf(CharSequence text, int fromIndex) {
+        if (text.length() == 0) {
+            return -1;
+        }
+        int limit = this.length() - text.length();
+        NEXT: for (int i = fromIndex; i <= limit; i++) {
+            for (int j = 0; j < text.length(); j++) {
+                if (text.charAt(j) != this.charAt(i + j)) {
+                    continue NEXT;
+                }
+            }
+            return i;
+        }
+        return -1;
+    }
+
+    /**
+     * Returns the index within this {@link CharacterBuffer} of the last occurrence of the specified {@link CharSequence}.<br>
+     * The last occurrence of the empty {@link String} {@code ""} is considered to occur at the index value {@code this.length()}.<br>
+     * <b>Hint:</b> This search is performed from right to left.
+     *
+     * 
+     * @param text
+     *            the {@link CharSequence} to search for.
+     * 
+     * @return the index of the last occurrence of the specified {@link CharSequence}<br>
+     *         {@code -1} if there is no such occurrence.
+     */
+    public final int lastIndexOf(CharSequence text) {
+        return lastIndexOf(text, size);
+    }
+
+    /**
+     * Returns the index within this {@link CharacterBuffer} of the last occurrence of the specified {@link CharSequence}.<br>
+     * The last occurrence of the empty {@link String} {@code ""} is considered to occur at the index value {@code this.length()}.<br>
+     * <b>Hint:</b> This search is performed from right to left starting at the specified index.
+     *
+     * 
+     * @param text
+     *            the {@link CharSequence} to search for.
+     * @param fromIndex
+     *            the index to start the search from.
+     * 
+     * @return the index of the last occurrence of the specified {@link CharSequence}<br>
+     *         {@code -1} if there is no such occurrence.
+     */
+    public final int lastIndexOf(CharSequence text, int fromIndex) {
+        if (text.length() == 0) {
+            return size;
+        }
+        NEXT: for (int i = fromIndex; i >= text.length(); i--) {
+            for (int j = 0; j < text.length(); j++) {
+                if (text.charAt(j) != this.charAt(i + j)) {
+                    continue NEXT;
+                }
+            }
+            return i;
+        }
+        return -1;
     }
 
     /**

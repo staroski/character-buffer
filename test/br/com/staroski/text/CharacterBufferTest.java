@@ -40,6 +40,72 @@ public class CharacterBufferTest {
             Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'", b.charAt(index), d.charAt(index));
         }
 
+        public void checkIndexOf(CharSequence text) {
+            String method = "indexOf(CharSequence)";
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'", a.indexOf(text), b.indexOf(text));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'", a.indexOf(text), c.indexOf(text.toString()));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'", a.indexOf(text), d.indexOf(text.toString()));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuilder       '" + method + "'", b.indexOf(text), c.indexOf(text.toString()));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'", b.indexOf(text), d.indexOf(text.toString()));
+        }
+
+        public void checkIndexOf(String text, int from) {
+            String method = "indexOf(CharSequence, int)";
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'",
+                                a.indexOf(text, from),
+                                b.indexOf(text, from));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'",
+                                a.indexOf(text, from),
+                                c.indexOf(text.toString(), from));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'",
+                                a.indexOf(text, from),
+                                d.indexOf(text.toString(), from));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuilder       '" + method + "'",
+                                b.indexOf(text, from),
+                                c.indexOf(text.toString(), from));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'",
+                                b.indexOf(text, from),
+                                d.indexOf(text.toString(), from));
+        }
+
+        public void checkLastIndexOf(CharSequence text) {
+            String method = "lastIndexOf(CharSequence)";
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'",
+                                a.lastIndexOf(text),
+                                b.lastIndexOf(text));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'",
+                                a.lastIndexOf(text),
+                                c.lastIndexOf(text.toString()));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'",
+                                a.lastIndexOf(text),
+                                d.lastIndexOf(text.toString()));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuilder       '" + method + "'",
+                                b.lastIndexOf(text),
+                                c.lastIndexOf(text.toString()));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'",
+                                b.lastIndexOf(text),
+                                d.lastIndexOf(text.toString()));
+        }
+
+        public void checkLastIndexOf(CharSequence text, int from) {
+            String method = "lastIndexOf(CharSequence, int)";
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'",
+                                a.lastIndexOf(text, from),
+                                b.lastIndexOf(text, from));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuilder       '" + method + "'",
+                                a.lastIndexOf(text, from),
+                                c.lastIndexOf(text.toString(), from));
+            Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> StringBuffer        '" + method + "'",
+                                a.lastIndexOf(text, from),
+                                d.lastIndexOf(text.toString(), from));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuilder       '" + method + "'",
+                                b.lastIndexOf(text, from),
+                                c.lastIndexOf(text.toString(), from));
+            Assert.assertEquals("CharacterBuffer 32K '" + method + "' <> StringBuffer        '" + method + "'",
+                                b.lastIndexOf(text, from),
+                                d.lastIndexOf(text.toString(), from));
+        }
+
         public void checkLength() {
             String method = "length()";
             Assert.assertEquals("CharacterBuffer 16K '" + method + "' <> CharacterBuffer 32K '" + method + "'", a.length(), b.length());
@@ -313,6 +379,40 @@ public class CharacterBufferTest {
         objects.d.delete(start, end);
 
         objects.checkToString();
+    }
+
+    @Test
+    public void testIndexOf() throws IOException {
+        Objects objects = new Objects();
+        objects.append("Hello World Wow");
+        objects.checkIndexOf("Wo");
+    }
+
+    @Test
+    public void testIndexOfFrom() throws IOException {
+        Objects objects = new Objects();
+        objects.append("Hello World Wow");
+        objects.checkIndexOf("Wo", 5);
+        objects.checkIndexOf("Wo", 9);
+        objects.checkIndexOf("Wo", 12);
+    }
+
+    @Test
+    public void testLastIndexOf() throws IOException {
+        Objects objects = new Objects();
+        objects.append("Hello World Wow");
+        objects.checkLastIndexOf("Wo");
+        objects.checkLastIndexOf("");
+    }
+
+    @Test
+    public void testLastIndexOfFrom() throws IOException {
+        Objects objects = new Objects();
+        objects.append("Hello World Wow");
+        objects.checkLastIndexOf("Wo", 5);
+        objects.checkLastIndexOf("Wo", 9);
+        objects.checkLastIndexOf("Wo", 12);
+        objects.checkLastIndexOf("", 15);
     }
 
     @Test
