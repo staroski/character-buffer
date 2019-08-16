@@ -469,4 +469,16 @@ public class CharacterBufferTest {
         objects.fill(CHARACTER_COUNT);
         objects.checkToString();
     }
+
+    // FIXME /* need to test */ insert(int, char[], int, int)
+    // FIXME /* need to test */ insert(int, Object)
+    // FIXME /* need to test */ insert(int, char[])
+    // FIXME /* need to test */ insert(int, CharSequence)
+    // FIXME /* need to test */ insert(int, CharSequence, int, int)
+    // FIXME /* need to test */ insert(int, boolean)
+    // FIXME /* need to test */ insert(int, char)
+    // FIXME /* need to test */ insert(int, int)
+    // FIXME /* need to test */ insert(int, long)
+    // FIXME /* need to test */ insert(int, float)
+    // FIXME /* need to test */ insert(int, double)
 }

@@ -144,15 +144,15 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
     /**
      * Appends the {@link String} representation of the {@code char} argument to this {@link CharacterBuffer}.
      * 
-     * @param character
+     * @param value
      *            the {@code char} to append.
      * 
      * @return a reference to this object.
      */
     @Override
-    public final CharacterBuffer append(char character) {
+    public final CharacterBuffer append(char value) {
         toStringCache = null;
-        memory[page][offset] = character;
+        memory[page][offset] = value;
         if ((offset = (offset + pageSize + 1) % pageSize) == 0) {
             allocateNext();
         }
@@ -474,6 +474,184 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
     }
 
     /**
+     * Inserts the {@link String} representation of the {@code boolean} argument to this {@link CharacterBuffer} at the specified index.
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param value
+     *            the {@code boolean} to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, boolean value) {
+        return insert(index, String.valueOf(value));
+    }
+
+    /**
+     * Inserts the {@link String} representation of the {@code char} argument to this {@link CharacterBuffer} at the specified index.
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param value
+     *            the {@code char} to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, char value) {
+        return insert(index, String.valueOf(value));
+    }
+
+    /**
+     * Inserts the {@link String} representation of the {@code char} array argument to this {@link CharacterBuffer} at the specified index.
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param characters
+     *            the {@code char} array to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, char[] characters) {
+        return insert(index, String.valueOf(characters));
+    }
+
+    /**
+     * inserts the {@link String} representation of a subarray of the {@code char} array argument to this {@link CharacterBuffer} at the specified index.
+     * 
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param characters
+     *            the {@code char} array to insert.
+     * 
+     * @param offset
+     *            the index of the first {@code char} to insert.
+     * 
+     * @param length
+     *            the number of {@code char}s to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, char[] characters, int offset, int length) {
+        return insert(index, String.valueOf(characters, offset, length));
+    }
+
+    /**
+     * Inserts the specified {@code CharSequence} to this {@link CharacterBuffer} at the specified index.
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param text
+     *            the {@code CharSequence} to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, CharSequence text) {
+        throw new UnsupportedOperationException("Method 'insert(int, CharSequence)' is not yet implemented");
+    }
+
+    /**
+     * Inserts a subsequence of the specified {@code CharSequence} to this {@link CharacterBuffer} at the specified index.
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param text
+     *            the {@code CharSequence} to insert.
+     * 
+     * @param start
+     *            the starting index of the subsequence to insert.
+     * 
+     * @param end
+     *            the end index of the subsequence to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, CharSequence text, int start, int end) {
+        return insert(index, text.subSequence(start, end));
+    }
+
+    /**
+     * Inserts the {@link String} representation of the {@code dpuble} argument to this {@link CharacterBuffer} at the specified index.
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param value
+     *            the {@code double} to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, double value) {
+        return insert(index, String.valueOf(value));
+    }
+
+    /**
+     * Inserts the {@link String} representation of the {@code float} argument to this {@link CharacterBuffer} at the specified index.
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param value
+     *            the {@code float} to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, float value) {
+        return insert(index, String.valueOf(value));
+    }
+
+    /**
+     * Inserts the {@link String} representation of the {@code int} argument to this {@link CharacterBuffer} at the specified index.
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param value
+     *            the {@code int} to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, int value) {
+        return insert(index, String.valueOf(value));
+    }
+
+    /**
+     * Inserts the {@link String} representation of the {@code long} argument to this {@link CharacterBuffer} at the specified index.
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param value
+     *            the {@code long} to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, long value) {
+        return insert(index, String.valueOf(value));
+    }
+
+    /**
+     * Inserts the {@link String} representation of the {@link Object} argument to this {@link CharacterBuffer} at the specified index.
+     * 
+     * @param index
+     *            position at which to insert.
+     * 
+     * @param object
+     *            the {@link Object} to insert.
+     * 
+     * @return a reference to this object.
+     */
+    public final CharacterBuffer insert(int index, Object object) {
+        return insert(index, String.valueOf(object));
+    }
+
+    /**
      * Returns the index within this {@link CharacterBuffer} of the last occurrence of the specified {@link CharSequence}.<br>
      * The last occurrence of the empty {@link String} {@code ""} is considered to occur at the index value {@code this.length()}.<br>
      * <b>Hint:</b> This search is performed from right to left.
@@ -653,4 +831,5 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
         }
         writer.flush();
     }
+
 }
