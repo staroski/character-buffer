@@ -6,12 +6,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
+import java.lang.ref.SoftReference;
 import java.util.Arrays;
 
 /**
  * This class is an alternative to Java's {@link StringBuilder} and {@link StringBuffer} classes.<br>
  * Instances of this class are created using an <i>builder design pattern</i> through the factory method {@link CharacterBuffer#with(int)}.<br>
- * The following examples show 4 different ways to instantiate an {@link CharacterBuffer} with memory pages of {@code 16KB}:
+ * <b>Example:</b><br>
+ * Instantiating a {@link CharacterBuffer} with memory pages of {@code 16KB} in 4 different ways:
  * 
  * <pre>
  * CharacterBuffer a = CharacterBuffer.with(16384).bytes();
@@ -21,15 +23,23 @@ import java.util.Arrays;
  * </pre>
  * 
  * The {@link CharacterBuffer}'s memory allocation strategy differs in the following way:<br>
- * {@link StringBuilder} and {@link StringBuffer} classes double the size of the internal {@code char} array when the current capacity is reached.<br>
- * {@link CharacterBuffer} allocates fixed sized blocks of memory preventing {@code OutOfMemoryError}s when dealing with huge {@link String} concatenations.<br>
+ * - When {@link StringBuilder} and {@link StringBuffer} reach the current capacity, they double the size of the internal {@code char} array.<br>
+ * - When {@link CharacterBuffer} reach the current capacity, it allocates a new memory page that is a fixed size {@code char} array.<br>
+ * With this strategy the {@link CharacterBuffer} prevents {@code OutOfMemoryError}s when dealing with huge {@link String} concatenations.<br>
  * 
  * @author Ricardo Artur Staroski
  */
 public final class CharacterBuffer implements Appendable, CharSequence, Comparable<CharSequence>, Serializable {
 
     /**
-     * Builder class used to determine the {@link CharacterBuffer}'s memory page size magnitude.
+     * Builder used to determine the {@link CharacterBuffer}'s memory page sizes.<br>
+     * <b>Factory methods:</b><br>
+     * - {@link #bytes()}: returns a new {@link CharacterBuffer} whith page sizes that have this amount of {@code byte}s.<br>
+     * - {@link #chars()}: returns a new {@link CharacterBuffer} whith page sizes that have this amount of {@code char}s.<br>
+     * <b>Multipliers:</b><br>
+     * - {@link #kilo()}: returns this amount multiplied by 2<sup>10</sup>.<br>
+     * - {@link #mega()}: returns this amount multiplied by 2<sup>20</sup>.<br>
+     * - {@link #giga()}: returns this amount multiplied by 2<sup>30</sup>.
      */
     public static final class Amount {
 
@@ -46,35 +56,35 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
         }
 
         /**
-         * @return an {@link CharacterBuffer} with memory page sizes that grow this specified amount of bytes.
+         * @return an {@link CharacterBuffer} with memory page sizes that that have this {@link Amount amount} of bytes.
          */
         public final CharacterBuffer bytes() {
             return new CharacterBuffer(amount >> 1);
         }
 
         /**
-         * @return an {@link CharacterBuffer} with memory page sizes that grow this specified amount of chars.
+         * @return an {@link CharacterBuffer} with memory page sizes that have this {@link Amount amount} of chars.
          */
         public final CharacterBuffer chars() {
             return new CharacterBuffer(amount);
         }
 
         /**
-         * @return this amount multiplied by 2<sup>30</sup>.
+         * @return this {@link Amount amount} multiplied by 2<sup>30</sup>.
          */
         public final Amount giga() {
             return new Amount(amount * 1073741824);
         }
 
         /**
-         * @return this amount multiplied by 2<sup>10</sup>.
+         * @return this {@link Amount amount} multiplied by 2<sup>10</sup>.
          */
         public final Amount kilo() {
             return new Amount(amount * 1024);
         }
 
         /**
-         * @return this amount multiplied by 2<sup>20</sup>.
+         * @return this {@link Amount amount} multiplied by 2<sup>20</sup>.
          */
         public final Amount mega() {
             return new Amount(amount * 1048576);
@@ -84,12 +94,12 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
     private static final long serialVersionUID = 1;
 
     /**
-     * Prepares the {@link Amount} of memory that each memory page will allocate.
+     * Prepares the {@link Amount amount} of memory that each memory page will allocate.
      * 
      * @param amount
      *            The amount of memory that will be allocated for each new memory page.
      * 
-     * @return An {@link Amount} object to buid the instance of {@link CharacterBuffer}.
+     * @return An {@link Amount} object to build the instance of {@link CharacterBuffer}.
      */
     public static final Amount with(int amount) {
         return new Amount(amount);
@@ -102,7 +112,7 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
     private int page;
     private int offset;
 
-    private transient String toStringCache;
+    private transient SoftReference<String> toStringCache;
 
     /**
      * Private constructor, see {@link CharacterBuffer#with(int)} method.
@@ -482,7 +492,7 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
      */
     @Override
     public final String toString() {
-        if (toStringCache == null) {
+        if (toStringCache == null || toStringCache.get() == null) {
             int index = 0;
             char[] chars = new char[size];
             int last = size / pageSize;
@@ -493,9 +503,9 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
                 }
                 System.arraycopy(memory[last], 0, chars, index, offset);
             }
-            toStringCache = String.valueOf(chars);
+            toStringCache = new SoftReference<String>(String.valueOf(chars));
         }
-        return toStringCache;
+        return toStringCache.get();
     }
 
     /**
