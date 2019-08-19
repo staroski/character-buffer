@@ -552,7 +552,18 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
      * @return a reference to this object.
      */
     public final CharacterBuffer insert(int index, CharSequence text) {
-        throw new UnsupportedOperationException("Method 'insert(int, CharSequence)' is not yet implemented");
+        int remaining = text.length();
+        if (remaining < 1) {
+            return this;
+        }
+        toStringCache = null;
+        CharacterBuffer sufix = subSequence(index, size);
+        page = index / pageSize;
+        offset = index % pageSize;
+        size = index;
+        append(text);
+        append(sufix);
+        return this;
     }
 
     /**
@@ -831,5 +842,4 @@ public final class CharacterBuffer implements Appendable, CharSequence, Comparab
         }
         writer.flush();
     }
-
 }

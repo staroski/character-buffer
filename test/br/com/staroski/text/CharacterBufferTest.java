@@ -398,6 +398,175 @@ public class CharacterBufferTest {
     }
 
     @Test
+    public void testInsertCharSequenceStartEnd() throws IOException {
+        Objects objects = new Objects();
+        objects.fill(CHARACTER_COUNT);
+
+        CharSequence charSequence = "Hello World";
+        int index = 13;
+        int start = 3;
+        int end = 7;
+        objects.a.insert(index, charSequence, start, end);
+        objects.b.insert(index, charSequence, start, end);
+        objects.c.insert(index, charSequence, start, end);
+        objects.d.insert(index, charSequence, start, end);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testInsertDouble() {
+        Objects objects = new Objects();
+        objects.append("abcdefghijklmnopqrstuvxyz0123456789");
+
+        double value = 12345.6789;
+        int index = 13;
+        objects.a.insert(index, value);
+        objects.b.insert(index, value);
+        objects.c.insert(index, value);
+        objects.d.insert(index, value);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testInsertIndexBoolean() {
+        Objects objects = new Objects();
+        objects.append("abcdefghijklmnopqrstuvxyz0123456789");
+
+        boolean value = true;
+        int index = 13;
+        objects.a.insert(index, value);
+        objects.b.insert(index, value);
+        objects.c.insert(index, value);
+        objects.d.insert(index, value);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testInsertIndexChar() {
+        Objects objects = new Objects();
+        objects.append("abcdefghijklmnopqrstuvxyz0123456789");
+
+        char value = 'X';
+        int index = 13;
+        objects.a.insert(index, value);
+        objects.b.insert(index, value);
+        objects.c.insert(index, value);
+        objects.d.insert(index, value);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testInsertIndexCharacters() {
+        Objects objects = new Objects();
+        objects.append("abcdefghijklmnopqrstuvxyz0123456789");
+
+        char[] characters = new char[] { 'H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd' };
+        int index = 13;
+        objects.a.insert(index, characters);
+        objects.b.insert(index, characters);
+        objects.c.insert(index, characters);
+        objects.d.insert(index, characters);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testInsertIndexCharactersOffsetLength() {
+        Objects objects = new Objects();
+        objects.append("abcdefghijklmnopqrstuvxyz0123456789");
+
+        char[] characters = new char[] { 'H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd' };
+        int index = 13;
+        int offset = 3;
+        int length = 5;
+        objects.a.insert(index, characters, offset, length);
+        objects.b.insert(index, characters, offset, length);
+        objects.c.insert(index, characters, offset, length);
+        objects.d.insert(index, characters, offset, length);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testInsertIndexCharSequence() {
+        Objects objects = new Objects();
+        objects.append("abcdefghijklmnopqrstuvxyz0123456789");
+
+        CharSequence value = "HelloWorld";
+        int index = 13;
+        objects.a.insert(index, value);
+        objects.b.insert(index, value);
+        objects.c.insert(index, value);
+        objects.d.insert(index, value);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testInsertIndexFloat() {
+        Objects objects = new Objects();
+        objects.append("abcdefghijklmnopqrstuvxyz0123456789");
+
+        float value = (float) 123.45;
+        int index = 13;
+        objects.a.insert(index, value);
+        objects.b.insert(index, value);
+        objects.c.insert(index, value);
+        objects.d.insert(index, value);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testInsertIndexInt() {
+        Objects objects = new Objects();
+        objects.append("abcdefghijklmnopqrstuvxyz0123456789");
+
+        int value = 123;
+        int index = 13;
+        objects.a.insert(index, value);
+        objects.b.insert(index, value);
+        objects.c.insert(index, value);
+        objects.d.insert(index, value);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testInsertIndexLong() {
+        Objects objects = new Objects();
+        objects.append("abcdefghijklmnopqrstuvxyz0123456789");
+
+        long value = 123456;
+        int index = 13;
+        objects.a.insert(index, value);
+        objects.b.insert(index, value);
+        objects.c.insert(index, value);
+        objects.d.insert(index, value);
+
+        objects.checkToString();
+    }
+
+    @Test
+    public void testInsertIndexObject() {
+        Objects objects = new Objects();
+        objects.append("abcdefghijklmnopqrstuvxyz0123456789");
+
+        Object value = "HelloWorld";
+        int index = 13;
+        objects.a.insert(index, value);
+        objects.b.insert(index, value);
+        objects.c.insert(index, value);
+        objects.d.insert(index, value);
+
+        objects.checkToString();
+    }
+
+    @Test
     public void testLastIndexOf() throws IOException {
         Objects objects = new Objects();
         objects.append("Hello World Wow");
@@ -469,16 +638,4 @@ public class CharacterBufferTest {
         objects.fill(CHARACTER_COUNT);
         objects.checkToString();
     }
-
-    // FIXME /* need to test */ insert(int, char[], int, int)
-    // FIXME /* need to test */ insert(int, Object)
-    // FIXME /* need to test */ insert(int, char[])
-    // FIXME /* need to test */ insert(int, CharSequence)
-    // FIXME /* need to test */ insert(int, CharSequence, int, int)
-    // FIXME /* need to test */ insert(int, boolean)
-    // FIXME /* need to test */ insert(int, char)
-    // FIXME /* need to test */ insert(int, int)
-    // FIXME /* need to test */ insert(int, long)
-    // FIXME /* need to test */ insert(int, float)
-    // FIXME /* need to test */ insert(int, double)
 }
